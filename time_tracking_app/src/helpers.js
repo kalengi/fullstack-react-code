@@ -1,4 +1,4 @@
-window.helpers = (function () {
+export let helpers = (function () {
   function newTimer(attrs = {}) {
     const timer = {
       title: attrs.title || 'Timer',

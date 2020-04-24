@@ -1,11 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ProductList from "./App";
+import "./semantic-dist/semantic.min.css";
+import "./style.css";
+import TimersDashboard from "./App";
 
 const rootElement = document.getElementById("content");
 ReactDOM.render(
   <React.StrictMode>
-    <ProductList />
+    <TimersDashboard />
   </React.StrictMode>,
   rootElement
 );
