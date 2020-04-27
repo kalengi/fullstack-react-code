@@ -45,6 +45,7 @@ app.post("/api/check-auth", async (req, res) => {
 });
 
 app.get("/api/timers", (req, res) => {
+  console.log("DATA_FILE: " + DATA_FILE);
   fs.readFile(DATA_FILE, (err, data) => {
     res.setHeader("Cache-Control", "no-cache");
     res.json(JSON.parse(data));

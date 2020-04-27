@@ -1,26 +1,22 @@
 import React from "react";
-import { v4 as uuidv4 } from "uuid";
+//import { v4 as uuidv4 } from "uuid";
 import { helpers } from "./helpers";
+import { client } from "./client";
 
 export default class TimersDashboard extends React.Component {
   state = {
-    timers: [
-      {
-        title: "Practice squat",
-        project: "Gym Chores",
-        id: uuidv4(),
-        elapsed: 5456099,
-        runningSince: Date.now()
-      },
-      {
-        title: "Bake squash",
-        project: "Kitchen Chores",
-        id: uuidv4(),
-        elapsed: 1273998,
-        runningSince: null
-      }
-    ]
+    timers: []
   };
+
+  componentDidMount() {
+    this.loadTimersFromServer();
+    setInterval(this.loadTimersFromServer, 5000);
+  }
+
+  loadTimersFromServer = () => {
+    client.getTimers(serverTimers => this.setState({ timers: serverTimers }));
+  };
+  // ...
 
   handleCreateFormSubmit = timer => {
     this.createTimer(timer);
@@ -30,7 +26,6 @@ export default class TimersDashboard extends React.Component {
     this.updateTimer(attrs);
   };
 
-  // Inside TimersDashboard
   handleTrashClick = timerId => {
     this.deleteTimer(timerId);
   };
@@ -109,7 +104,6 @@ export default class TimersDashboard extends React.Component {
     return (
       <div className="ui three column centered grid">
         <div className="column">
-          {/* Inside TimerDashboard.render() */}
           <EditableTimerList
             timers={this.state.timers}
             onFormSubmit={this.handleEditFormSubmit}

@@ -1,68 +1,73 @@
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
-window.client = (function () {
+export let client = (function() {
   function getTimers(success) {
-    return fetch('/api/timers', {
+    return fetch("/api/timers", {
+      mode: "cors",
       headers: {
-        Accept: 'application/json',
-      },
-    }).then(checkStatus)
+        Accept: "application/json"
+      }
+    })
+      .then(checkStatus)
       .then(parseJSON)
       .then(success);
   }
 
   function createTimer(data) {
-    return fetch('/api/timers', {
-      method: 'post',
+    return fetch("/api/timers", {
+      method: "post",
+      mode: "cors",
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     }).then(checkStatus);
   }
 
   function updateTimer(data) {
-    return fetch('/api/timers', {
-      method: 'put',
+    return fetch("/api/timers", {
+      method: "put",
+      mode: "cors",
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     }).then(checkStatus);
   }
 
   function deleteTimer(data) {
-    return fetch('/api/timers', {
-      method: 'delete',
+    return fetch("/api/timers", {
+      method: "delete",
+      mode: "cors",
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     }).then(checkStatus);
   }
 
   function startTimer(data) {
-    return fetch('/api/timers/start', {
-      method: 'post',
+    return fetch("/api/timers/start", {
+      method: "post",
+      mode: "cors",
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     }).then(checkStatus);
   }
 
   function stopTimer(data) {
-    return fetch('/api/timers/stop', {
-      method: 'post',
+    return fetch("/api/timers/stop", {
+      method: "post",
+      mode: "cors",
       body: JSON.stringify(data),
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
     }).then(checkStatus);
   }
 
@@ -88,6 +93,6 @@ window.client = (function () {
     updateTimer,
     startTimer,
     stopTimer,
-    deleteTimer,
+    deleteTimer
   };
-}());
+})();
