@@ -5075,7 +5075,7 @@ i.flag:not(.icon) {
 i.flag:not(.icon):before {
   display: inline-block;
   content: '';
-  background: url("./semantic-dist/themes/default/assets/images/flags.png") no-repeat -108px -1976px;
+  background: url("./themes/default/assets/images/flags.png") no-repeat -108px -1976px;
   width: 16px;
   height: 11px;
 }
@@ -7150,8 +7150,8 @@ a.ui.inverted.grey.header:hover {
 
 @font-face {
   font-family: 'Icons';
-  src: url("./semantic-dist/themes/default/assets/fonts/icons.eot");
-  src: url("./semantic-dist/themes/default/assets/fonts/icons.eot?#iefix") format('embedded-opentype'), url("./semantic-dist/themes/default/assets/fonts/icons.woff2") format('woff2'), url("./semantic-dist/themes/default/assets/fonts/icons.woff") format('woff'), url("./semantic-dist/themes/default/assets/fonts/icons.ttf") format('truetype'), url("./semantic-dist/themes/default/assets/fonts/icons.svg#icons") format('svg');
+  src: url("./themes/default/assets/fonts/icons.eot");
+  src: url("./themes/default/assets/fonts/icons.eot?#iefix") format('embedded-opentype'), url("./themes/default/assets/fonts/icons.woff2") format('woff2'), url("./themes/default/assets/fonts/icons.woff") format('woff'), url("./themes/default/assets/fonts/icons.ttf") format('truetype'), url("./themes/default/assets/fonts/icons.svg#icons") format('svg');
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -14108,7 +14108,7 @@ ul.ui.list li:before,
   left: auto;
   font-weight: normal;
   margin-left: -1.25rem;
-  content: 'â€¢';
+  content: 'â?¢';
   opacity: 1;
   color: inherit;
   vertical-align: top;
@@ -16965,7 +16965,7 @@ ol.ui.horizontal.list li:before,
 .ui.ordered.steps .step.completed:before {
   font-family: 'Step';
   content: '\e800';
-  /* 'î €' */
+  /* 'î ?' */
 }
 
 /*******************************
@@ -22884,7 +22884,7 @@ Floated Menu / Item
 
 .ui.message .list:not(.ui) li:before {
   position: absolute;
-  content: 'â€¢';
+  content: 'â?¢';
   left: -1em;
   height: 100%;
   vertical-align: baseline;
