@@ -2,8 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
-//const os = require("os");
-//const fetch = require("node-fetch");
 
 const app = express();
 
@@ -11,8 +9,6 @@ const DATA_FILE = path.join(__dirname, "./data/data.json");
 
 const PORT = 8000;
 
-//app.use(express.static("dist"));
-//let staticFilesPath = path.join(__dirname, "../../public");
 let staticFilesPath = path.join(__dirname, "../client/build");
 app.use("/", express.static(staticFilesPath));
 app.use(bodyParser.json());
@@ -45,7 +41,7 @@ app.post("/api/check-auth", async (req, res) => {
 });
 
 app.get("/api/timers", (req, res) => {
-  console.log("DATA_FILE: " + DATA_FILE);
+  //console.log("DATA_FILE: " + DATA_FILE);
   fs.readFile(DATA_FILE, (err, data) => {
     res.setHeader("Cache-Control", "no-cache");
     res.json(JSON.parse(data));
@@ -118,11 +114,12 @@ app.put("/api/timers", (req, res) => {
 app.delete("/api/timers", (req, res) => {
   fs.readFile(DATA_FILE, (err, data) => {
     let timers = JSON.parse(data);
-    timers = timers.reduce((memo, timer) => {
+    timers = timers.reduce((timerList, timer) => {
       if (timer.id === req.body.id) {
-        return memo;
+        console.log(" -> Deleting: " + timer.id);
+        return timerList;
       } else {
-        return memo.concat(timer);
+        return timerList.concat(timer);
       }
     }, []);
     fs.writeFile(DATA_FILE, JSON.stringify(timers, null, 4), () => {

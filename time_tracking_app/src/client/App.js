@@ -1,5 +1,4 @@
 import React from "react";
-//import { v4 as uuidv4 } from "uuid";
 import { helpers } from "./helpers";
 import { client } from "./client";
 
@@ -16,7 +15,6 @@ export default class TimersDashboard extends React.Component {
   loadTimersFromServer = () => {
     client.getTimers(serverTimers => this.setState({ timers: serverTimers }));
   };
-  // ...
 
   handleCreateFormSubmit = timer => {
     this.createTimer(timer);
@@ -38,11 +36,13 @@ export default class TimersDashboard extends React.Component {
     this.stopTimer(timerId);
   };
 
-  createTimer = timer => {
-    const t = helpers.newTimer(timer);
+  createTimer = attrs => {
+    const newTimer = helpers.newTimer(attrs);
     this.setState({
-      timers: this.state.timers.concat(t)
+      timers: this.state.timers.concat(newTimer)
     });
+    debugger;
+    client.createTimer(newTimer);
   };
 
   updateTimer = attrs => {
@@ -58,14 +58,20 @@ export default class TimersDashboard extends React.Component {
         }
       })
     });
+
+    client.updateTimer(attrs);
   };
 
   deleteTimer = timerId => {
     this.setState({
       timers: this.state.timers.filter(t => t.id !== timerId)
     });
+
+    client.deleteTimer({ id: timerId });
   };
 
+  // Inside TimersDashboard
+  // ...
   startTimer = timerId => {
     const now = Date.now();
 
@@ -80,6 +86,8 @@ export default class TimersDashboard extends React.Component {
         }
       })
     });
+
+    client.startTimer({ id: timerId, start: now });
   };
 
   stopTimer = timerId => {
@@ -98,9 +106,12 @@ export default class TimersDashboard extends React.Component {
         }
       })
     });
+
+    client.stopTimer({ id: timerId, stop: now });
   };
 
   render() {
+    // ...
     return (
       <div className="ui three column centered grid">
         <div className="column">
