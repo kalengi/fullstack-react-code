@@ -1,7 +1,8 @@
 const MOUNT = document.getElementById('root');
 class App extends React.Component {
   render() {
-    const klasses = classnames({
+    this.state = { onHighAlert: false };
+    const klasses = classNames({
       box: true, // always apply the box class
       alert: this.props.isAlert, // if the prop is set
       severity: this.state.onHighAlert, // with state
