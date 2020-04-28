@@ -1,9 +1,9 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
+//import createReactClass from 'create-react-class';
 
 // React.createClass
-const CreateClassApp = createReactClass({
+const App = React.createClass({
   render: function() {} // required method
 });
 
-export default CreateClassApp;
+export default App
