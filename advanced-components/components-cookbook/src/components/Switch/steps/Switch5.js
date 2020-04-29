@@ -1,36 +1,32 @@
-import React, { PropTypes } from 'react';
-import styles from '../Switch.css';
+import React from "react";
+import "./Switch.css";
 
-const CREDITCARD = 'Creditcard';
-const BTC = 'Bitcoin';
+const CREDITCARD = "Creditcard";
+const BTC = "Bitcoin";
 
-class Switch extends React.Component {
+export default class Switch extends React.Component {
   state = {
-    payMethod: BTC,
+    payMethod: BTC
   };
 
-  select = (choice) => {
-    return (evt) => {
+  select = choice => {
+    return evt => {
       this.setState({
-        payMethod: choice,
+        payMethod: choice
       });
     };
   };
 
-  renderChoice = (choice) => {
+  renderChoice = choice => {
     // create a set of cssClasses to apply
-    const cssClasses = [];
-
+    let cssClass = "choice";
+    //debugger;
     if (this.state.payMethod === choice) {
-      cssClasses.push(styles.active); // add .active class
+      cssClass = "active"; // add .active class
     }
 
     return (
-      <div
-        className='choice'
-        onClick={this.select(choice)}
-        className={cssClasses}
-      >
+      <div onClick={this.select(choice)} className={cssClass}>
         {choice}
       </div>
     );
@@ -38,7 +34,7 @@ class Switch extends React.Component {
 
   render() {
     return (
-      <div className='switch'>
+      <div className="switch">
         {this.renderChoice(CREDITCARD)}
         {this.renderChoice(BTC)}
         Pay with: {this.state.payMethod}
@@ -46,5 +42,3 @@ class Switch extends React.Component {
     );
   }
 }
-
-module.exports = Switch;
