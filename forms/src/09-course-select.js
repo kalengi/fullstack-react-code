@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 /* eslint no-underscore-dangle: [2, { "allow": ["_loading"] }] */
 import React from 'react';
-import Core from './api/core.json';
-import Electives from './api/electives.json';
+import CoreCourses from './api/core.json';
+import ElectiveCourses from './api/electives.json';
 
-const Courses = {
-  core: Core,
-  electives: Electives,
+const DepartmentCourses = {
+  core: CoreCourses,
+  electives: ElectiveCourses,
 };
 
 module.exports = class extends React.Component {
@@ -17,72 +17,72 @@ module.exports = class extends React.Component {
   };
 
   state = {
-    department: null,
-    course: null,
-    courses: [],
+    selectedDepartment: null,
+    selectedCourse: null,
+    coursesInDepartment: [],
     _loading: false,
   };
 
   componentWillReceiveProps(update) {
     this.setState({
-      department: update.department,
-      course: update.course,
+      selectedDepartment: update.department,
+      selectedCourse: update.course,
     });
   }
 
   onSelectDepartment = (evt) => {
-    const department = evt.target.value;
-    const course = null;
-    this.setState({ department, course });
-    this.props.onChange({ name: 'department', value: department });
-    this.props.onChange({ name: 'course', value: course });
+    const selectedDepartment = evt.target.value;
+    const selectedCourse = null;
+    this.setState({ selectedDepartment, selectedCourse });
+    this.props.onChange({ name: 'department', value: selectedDepartment });
+    this.props.onChange({ name: 'course', value: selectedCourse });
 
-    if (department) this.fetch(department);
+    if (selectedDepartment) this.fetchCoursesForDepartment(selectedDepartment);
   };
 
   onSelectCourse = (evt) => {
-    const course = evt.target.value;
-    this.setState({ course });
-    this.props.onChange({ name: 'course', value: course });
+    const selectedCourse = evt.target.value;
+    this.setState({ selectedCourse });
+    this.props.onChange({ name: 'course', value: selectedCourse });
   };
 
-  fetch = (department) => {
-    this.setState({ _loading: true, courses: [] });
-    apiClient(department).then((courses) => {
-      this.setState({ _loading: false, courses: courses });
+  fetchCoursesForDepartment = (selectedDepartment) => {
+    this.setState({ _loading: true, coursesInDepartment: [] });
+    apiFetchCoursesForDepartment(selectedDepartment).then((coursesInDepartment) => {
+      this.setState({ _loading: false, coursesInDepartment: coursesInDepartment });
     });
   };
 
-  renderDepartmentSelect = () => {
+  renderDepartmentList = () => {
     return (
       <select
         onChange={this.onSelectDepartment}
-        value={this.state.department || ''}
+        value={this.state.selectedDepartment || ''}
       >
 
         <option value=''>
           Which department?
         </option>
         <option value='core'>
-          NodeSchool: Core
+          NodeSchool: CoreCourses
         </option>
         <option value='electives'>
-          NodeSchool: Electives
+          NodeSchool: ElectiveCourses
         </option>
       </select>
     );
   };
 
-  renderCourseSelect = () => {
+  renderCourseList = () => {
     if (this.state._loading) {
       return <img alt='loading' src='/img/loading.gif' />;
     }
-    if (!this.state.department || !this.state.courses.length) return <span />;
+    if (!this.state.selectedDepartment || !this.state.coursesInDepartment.length) return <span />;
 
     return (
       <select
         onChange={this.onSelectCourse}
-        value={this.state.course || ''}
+        value={this.state.selectedCourse || ''}
       >
 
         { [
@@ -90,7 +90,7 @@ module.exports = class extends React.Component {
             Which course?
           </option>,
 
-          ...this.state.courses.map((course, i) => (
+          ...this.state.coursesInDepartment.map((course, i) => (
             <option value={course} key={i}>
               {course}
             </option>
@@ -103,18 +103,18 @@ module.exports = class extends React.Component {
   render() {
     return (
       <div>
-        { this.renderDepartmentSelect() }
+        { this.renderDepartmentList() }
         <br />
-        { this.renderCourseSelect() }
+        { this.renderCourseList() }
       </div>
     );
   }
 };
 
-function apiClient(department) {
+function apiFetchCoursesForDepartment(selectedDepartment) {
   return {
-    then: function (cb) {
-      setTimeout(() => { cb(Courses[department]); }, 1000);
+    then: function (callbackReceiveDepartmentCourses) {
+      setTimeout(() => { callbackReceiveDepartmentCourses(DepartmentCourses[selectedDepartment]); }, 1000);
     },
   };
 }
