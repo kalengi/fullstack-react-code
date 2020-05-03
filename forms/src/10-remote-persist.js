@@ -125,7 +125,8 @@ module.exports = class extends React.Component {
 
           <br />
 
-          {{
+          { //This here, is some brilliant code! Completely eliminates the need for a Switch statement.
+          {
             SAVING: <input value='Saving...' type='submit' disabled />,
             SUCCESS: <input value='Saved!' type='submit' disabled />,
             ERROR: <input
