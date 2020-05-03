@@ -27,7 +27,7 @@ module.exports = class extends React.Component {
 
     evt.preventDefault();
 
-    if (this.validate()) return;
+    if (!this.isFormDataValid()) return;
 
     this.setState({
       people: people.concat(person),
@@ -50,18 +50,18 @@ module.exports = class extends React.Component {
     this.setState({ fields, fieldErrors });
   };
 
-  validate = () => {
+  isFormDataValid = () => {
     const person = this.state.fields;
     const fieldErrors = this.state.fieldErrors;
     const errMessages = Object.keys(fieldErrors).filter((k) => fieldErrors[k]);
 
-    if (!person.name) return true;
-    if (!person.email) return true;
-    if (!person.course) return true;
-    if (!person.department) return true;
-    if (errMessages.length) return true;
+    if (!person.name) return false;
+    if (!person.email) return false;
+    if (!person.course) return false;
+    if (!person.department) return false;
+    if (errMessages.length) return false;
 
-    return false;
+    return true;
   };
 
   render() {
@@ -99,7 +99,7 @@ module.exports = class extends React.Component {
 
           <br />
 
-          <input type='submit' disabled={this.validate()} />
+          <input type='submit' disabled={!this.isFormDataValid()} />
         </form>
 
         <div>
