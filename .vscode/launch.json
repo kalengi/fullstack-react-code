@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\redux\\counter\\app.js"
+            "program": "${workspaceFolder}\\redux\\chat_simple\\src\\App.js"
         }
     ]
 }
