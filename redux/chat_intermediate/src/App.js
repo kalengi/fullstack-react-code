@@ -1,27 +1,55 @@
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
-import { createStore } from "redux";
+/*
+  Persisted code differences:
+  1. import { v4 as uuidv4 } from "uuid";
+  2. id: uuidv4()
+*/
+
+import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { createStore } from 'redux';
 
 function reducer(state, action) {
-  if (action.type === "ADD_MESSAGE") {
+  if (action.type === 'ADD_MESSAGE') {
     const newMessage = {
       text: action.text,
       timestamp: Date.now(),
-      id: uuidv4()
+      id: uuidv4(),
     };
     return {
-      messages: state.messages.concat(newMessage)
+      messages: state.messages.concat(newMessage),
     };
-  } else if (action.type === "DELETE_MESSAGE") {
+  } else if (action.type === 'DELETE_MESSAGE') {
     return {
-      messages: state.messages.filter(m => m.id !== action.id)
+      messages: state.messages.filter((m) => (
+        m.id !== action.id
+      ))
     };
   } else {
     return state;
   }
 }
 
-const initialState = { messages: [] };
+const initialState = {
+  activeThreadId: '1-fca2',
+  threads: [
+    {
+      id: '1-fca2',
+      title: 'Buzz Aldrin',
+      messages: [
+        {
+          text: 'Twelve minutes to ignition.',
+          timestamp: Date.now(),
+          id: uuidv4(),
+        },
+      ],
+    },
+    {
+      id: '2-be91',
+      title: 'Michael Collins',
+      messages: [],
+    },
+  ],
+};
 
 const store = createStore(reducer, initialState);
 
@@ -31,12 +59,40 @@ class App extends React.Component {
   }
 
   render() {
-    const messages = store.getState().messages;
+    const state = store.getState();
+    const activeThreadId = state.activeThreadId;
+    const threads = state.threads;
+    const activeThread = threads.find((t) => t.id === activeThreadId);
+
+    const tabs = threads.map(t => (
+      { // a "tab" object
+        title: t.title,
+        active: t.id === activeThreadId,
+      }
+    ));
 
     return (
-      <div className="ui segment">
-        <MessageView messages={messages} />
-        <MessageInput />
+      <div className='ui segment'>
+        <ThreadTabs tabs={tabs} />
+        <Thread thread={activeThread} />
+      </div>
+    );
+  }
+}
+
+class ThreadTabs extends React.Component {
+  render() {
+    const tabs = this.props.tabs.map((tab, index) => (
+      <div
+        key={index}
+        className={tab.active ? 'active item' : 'item'}
+      >
+        {tab.title}
+      </div>
+    ));
+    return (
+      <div className='ui top attached tabular menu'>
+        {tabs}
       </div>
     );
   }
@@ -44,33 +100,37 @@ class App extends React.Component {
 
 class MessageInput extends React.Component {
   state = {
-    value: ""
+    value: '',
   };
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
-      value: e.target.value
-    });
+      value: e.target.value,
+    })
   };
 
   handleSubmit = () => {
     store.dispatch({
-      type: "ADD_MESSAGE",
-      text: this.state.value
+      type: 'ADD_MESSAGE',
+      text: this.state.value,
     });
     this.setState({
-      value: ""
+      value: '',
     });
   };
 
   render() {
     return (
-      <div className="ui input">
-        <input onChange={this.onChange} value={this.state.value} type="text" />
+      <div className='ui input'>
+        <input
+          onChange={this.onChange}
+          value={this.state.value}
+          type='text'
+        />
         <button
           onClick={this.handleSubmit}
-          className="ui primary button"
-          type="submit"
+          className='ui primary button'
+          type='submit'
         >
           Submit
         </button>
@@ -79,35 +139,37 @@ class MessageInput extends React.Component {
   }
 }
 
-class MessageView extends React.Component {
-  handleClick = id => {
+class Thread extends React.Component {
+  handleClick = (id) => {
     store.dispatch({
-      type: "DELETE_MESSAGE",
-      id: id
+      type: 'DELETE_MESSAGE',
+      id: id,
     });
   };
 
   render() {
-    const messages = this.props.messages.map((message, index) => (
+    const messages = this.props.thread.messages.map((message, index) => (
       <div
-        className="comment"
+        className='comment'
         key={index}
-        onClick={() => this.handleClick(message.id)} // Use `id`
+        onClick={() => this.handleClick(message.id)}
       >
-        <div className="text">
-          {" "}
-          {/* Wrap message data in `div` */}
+        <div className='text'>
           {message.text}
-          <span className="metadata">@{message.timestamp}</span>
+          <span className='metadata'>@{message.timestamp}</span>
         </div>
       </div>
     ));
     return (
-      <div className="ui center aligned basic segment">
-        <div className="ui comments">{messages}</div>
+      <div className='ui center aligned basic segment'>
+        <div className='ui comments'>
+          {messages}
+        </div>
+        <MessageInput />
       </div>
     );
   }
 }
 
 export default App;
+
