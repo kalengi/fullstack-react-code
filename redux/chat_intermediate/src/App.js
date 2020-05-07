@@ -15,14 +15,49 @@ function reducer(state, action) {
       timestamp: Date.now(),
       id: uuidv4(),
     };
+    const threadIndex = state.threads.findIndex(
+      (t) => t.id === action.threadId
+    );
+    const oldThread = state.threads[threadIndex];
+    const newThread = {
+      ...oldThread,
+      messages: oldThread.messages.concat(newMessage),
+    };
+
     return {
-      messages: state.messages.concat(newMessage),
+      ...state,
+      threads: [
+        ...state.threads.slice(0, threadIndex),
+        newThread,
+        ...state.threads.slice(
+          threadIndex + 1, state.threads.length
+        ),
+      ],
     };
   } else if (action.type === 'DELETE_MESSAGE') {
-    return {
-      messages: state.messages.filter((m) => (
-        m.id !== action.id
+    const threadIndex = state.threads.findIndex(
+      (t) => t.messages.find((m) => (
+        m.id === action.id
       ))
+    );
+    const oldThread = state.threads[threadIndex];
+
+    const newThread = {
+      ...oldThread,
+      messages: oldThread.messages.filter((m) => (
+        m.id !== action.id
+      )),
+    };
+
+    return {
+      ...state,
+      threads: [
+        ...state.threads.slice(0, threadIndex),
+        newThread,
+        ...state.threads.slice(
+          threadIndex + 1, state.threads.length
+        ),
+      ],
     };
   } else {
     return state;
@@ -65,7 +100,7 @@ class App extends React.Component {
     const activeThread = threads.find((t) => t.id === activeThreadId);
 
     const tabs = threads.map(t => (
-      { // a "tab" object
+      {
         title: t.title,
         active: t.id === activeThreadId,
       }
@@ -79,6 +114,8 @@ class App extends React.Component {
     );
   }
 }
+
+/* eslint-disable react/prefer-stateless-function */
 
 class ThreadTabs extends React.Component {
   render() {
@@ -113,6 +150,7 @@ class MessageInput extends React.Component {
     store.dispatch({
       type: 'ADD_MESSAGE',
       text: this.state.value,
+      threadId: this.props.threadId,
     });
     this.setState({
       value: '',
@@ -165,7 +203,7 @@ class Thread extends React.Component {
         <div className='ui comments'>
           {messages}
         </div>
-        <MessageInput />
+        <MessageInput threadId={this.props.thread.id} />
       </div>
     );
   }
