@@ -1,24 +1,28 @@
 {
-  "name": "chat_intermediate",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "react": "16.0.0",
-    "react-dom": "16.0.0",
-    "react-redux": "5.0.5",
-    "redux": "3.6.0",
-    "uuid": "3.0.1"
-  },
-  "devDependencies": {
-    "concurrently": "3.4.0",
-    "react-scripts": "1.0.14"
-  },
+  "name": "chat-intermediate",
+  "version": "1.1.0",
+  "author": "Fullstack.io",
   "scripts": {
-    "start": "react-scripts start",
+    "go": "open http://localhost:3000; npm run server",
     "e2e": "nightwatch",
-    "run-e2e": "concurrently -k \"npm start\" \"npm run e2e\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "./node_modules/.bin/concurrently -k 'npm run server' 'npm run e2e'",
+    "start": "npm run server",
+    "server": "live-server public --host=localhost --port=3000 --middleware=./disable-browser-cache.js"
+  },
+  "private": true,
+  "devDependencies": {
+    "concurrently": "2.2.0",
+    "live-server": "https://github.com/acco/live-server/tarball/master"
+  },
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-redux": "7.2.0",
+    "redux": "4.0.5",
+    "redux-thunk": "2.3.0",
+    "uuid": "8.0.0",
+    "validator": "13.0.0"
   }
 }
