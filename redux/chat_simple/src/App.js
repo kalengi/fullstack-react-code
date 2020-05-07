@@ -1,19 +1,29 @@
 
 function createStore(reducer, initialState) {
   let state = initialState;
+  const listeners = [];
+  // ...
+
+  const subscribe = (listener) => (
+    listeners.push(listener)
+  );
 
   const getState = () => (state);
 
+  // ...
   const dispatch = (action) => {
     state = reducer(state, action);
+    listeners.forEach(l => l());
   };
+  // ...
 
+  // ...
   return {
+    subscribe,
     getState,
     dispatch,
   };
 }
-
 
 function reducer(state, action) {
   if (action.type === 'ADD_MESSAGE') {
@@ -38,37 +48,34 @@ const initialState = { messages: [] };
 
 const store = createStore(reducer, initialState);
 
-const addMessageAction1 = {
-  type: 'ADD_MESSAGE',
-  message: 'How does it look, Neil?',
+const listener = () => {
+  console.log('Current state: ');
+  console.log(JSON.stringify(store.getState(), null, 2));
 };
 
+store.subscribe(listener);
+
+const addMessageAction1 = {
+  type: 'ADD_MESSAGE',
+  message: 'How do you read?',
+};
 store.dispatch(addMessageAction1);
-const stateV1 = store.getState();
+    // -> `listener()` is called
 
 const addMessageAction2 = {
   type: 'ADD_MESSAGE',
-  message: 'Looking good.',
+  message: 'I read you loud and clear, Houston.',
 };
-
 store.dispatch(addMessageAction2);
-const stateV2 = store.getState();
-
-console.log('State v1:');
-console.log(JSON.stringify(stateV1, null, 2));
-console.log('State v2:');
-console.log(JSON.stringify(stateV2, null, 2));
+    // -> `listener()` is called
 
 const deleteMessageAction = {
   type: 'DELETE_MESSAGE',
   index: 0,
 };
-
 store.dispatch(deleteMessageAction);
-const stateV3 = store.getState();
-
-console.log('State v3:');
-console.log(JSON.stringify(stateV3, null, 2));
+    // -> `listener()` is called
 
 const App = { createStore, reducer, initialState }; // for tests
 //export default App;
+//console.log(JSON.stringify(stateV1, null, 2));
