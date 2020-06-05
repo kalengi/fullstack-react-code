@@ -7,6 +7,7 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { createStore, combineReducers } from "redux";
+import { Provider, connect } from "react-redux";
 
 const reducer = combineReducers({
   activeThreadId: activeThreadIdReducer,
@@ -91,72 +92,13 @@ function messagesReducer(state = [], action) {
 
 const store = createStore(reducer);
 
-const App = () => (
+const RawApp = () => (
   <div className="ui segment">
     {/* `Thread` changed to `ThreadDisplay` below */}
     <ThreadTabs />
     <ThreadDisplay />
   </div>
 );
-
-class ThreadTabs extends React.Component {
-  componentDidMount() {
-    store.subscribe(() => this.forceUpdate());
-  }
-
-  render() {
-    const state = store.getState();
-
-    const tabs = state.threads.map(t => ({
-      title: t.title,
-      active: t.id === state.activeThreadId,
-      id: t.id
-    }));
-
-    return (
-      <Tabs
-        tabs={tabs}
-        onClick={id =>
-          store.dispatch({
-            type: "OPEN_THREAD",
-            id: id
-          })
-        }
-      />
-    );
-  }
-}
-
-class ThreadDisplay extends React.Component {
-  componentDidMount() {
-    store.subscribe(() => this.forceUpdate());
-  }
-
-  render() {
-    const state = store.getState();
-    const activeThreadId = state.activeThreadId;
-    const activeThread = state.threads.find(t => t.id === activeThreadId);
-
-    return (
-      <Thread
-        thread={activeThread}
-        onMessageClick={id =>
-          store.dispatch({
-            type: "DELETE_MESSAGE",
-            id: id
-          })
-        }
-        onMessageSubmit={text =>
-          store.dispatch({
-            type: "ADD_MESSAGE",
-            text: text,
-            threadId: activeThreadId
-          })
-        }
-      />
-    );
-  }
-}
 
 const Tabs = props => (
   <div className="ui top attached tabular menu">
@@ -181,6 +123,61 @@ const Thread = props => (
     <TextFieldSubmit onSubmit={props.onMessageSubmit} />
   </div>
 );
+
+const mapStateToTabsProps = state => {
+  const tabs = state.threads.map(t => ({
+    title: t.title,
+    active: t.id === state.activeThreadId,
+    id: t.id
+  }));
+
+  return {
+    tabs
+  };
+};
+
+const mapDispatchToTabsProps = dispatch => ({
+  onClick: id =>
+    dispatch({
+      type: "OPEN_THREAD",
+      id: id
+    })
+});
+
+const ThreadTabs = connect(
+  mapStateToTabsProps,
+  mapDispatchToTabsProps
+)(Tabs);
+
+const mapStateToThreadProps = state => ({
+  thread: state.threads.find(t => t.id === state.activeThreadId)
+});
+
+const mapDispatchToThreadProps = dispatch => ({
+  onMessageClick: id =>
+    dispatch({
+      type: "DELETE_MESSAGE",
+      id: id
+    }),
+  dispatch: dispatch
+});
+
+const mergeThreadProps = (stateProps, dispatchProps) => ({
+  ...stateProps,
+  ...dispatchProps,
+  onMessageSubmit: text =>
+    dispatchProps.dispatch({
+      type: "ADD_MESSAGE",
+      text: text,
+      threadId: stateProps.thread.id
+    })
+});
+
+const ThreadDisplay = connect(
+  mapStateToThreadProps,
+  mapDispatchToThreadProps,
+  mergeThreadProps
+)(Thread);
 
 const MessageList = props => (
   <div className="ui comments">
@@ -228,5 +225,11 @@ class TextFieldSubmit extends React.Component {
     );
   }
 }
+
+const App = () => (
+  <Provider store={store}>
+    <RawApp />
+  </Provider>
+);
 
 export default App;
