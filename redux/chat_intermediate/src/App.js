@@ -92,6 +92,28 @@ function messagesReducer(state = [], action) {
 
 const store = createStore(reducer);
 
+function deleteMessage(id) {
+  return {
+    type: 'DELETE_MESSAGE',
+    id: id,
+  };
+}
+
+function addMessage(text, threadId) {
+  return {
+    type: 'ADD_MESSAGE',
+    text: text,
+    threadId: threadId,
+  };
+}
+
+function openThread(id) {
+  return {
+    type: 'OPEN_THREAD',
+    id: id,
+  };
+}
+
 const RawApp = () => (
   <div className="ui segment">
     {/* `Thread` changed to `ThreadDisplay` below */}
@@ -136,13 +158,13 @@ const mapStateToTabsProps = state => {
   };
 };
 
-const mapDispatchToTabsProps = dispatch => ({
-  onClick: id =>
-    dispatch({
-      type: "OPEN_THREAD",
-      id: id
-    })
-});
+const mapDispatchToTabsProps = (dispatch) => (
+  {
+    onClick: (id) => (
+      dispatch(openThread(id))
+    ),
+  }
+);
 
 const ThreadTabs = connect(
   mapStateToTabsProps,
@@ -153,25 +175,26 @@ const mapStateToThreadProps = state => ({
   thread: state.threads.find(t => t.id === state.activeThreadId)
 });
 
-const mapDispatchToThreadProps = dispatch => ({
-  onMessageClick: id =>
-    dispatch({
-      type: "DELETE_MESSAGE",
-      id: id
-    }),
-  dispatch: dispatch
-});
+const mapDispatchToThreadProps = (dispatch) => (
+  {
+    onMessageClick: (id) => (
+      dispatch(deleteMessage(id))
+    ),
+    dispatch: dispatch,
+  }
+);
 
-const mergeThreadProps = (stateProps, dispatchProps) => ({
-  ...stateProps,
-  ...dispatchProps,
-  onMessageSubmit: text =>
-    dispatchProps.dispatch({
-      type: "ADD_MESSAGE",
-      text: text,
-      threadId: stateProps.thread.id
-    })
-});
+const mergeThreadProps = (stateProps, dispatchProps) => (
+  {
+    ...stateProps,
+    ...dispatchProps,
+    onMessageSubmit: (text) => (
+      dispatchProps.dispatch(
+        addMessage(text, stateProps.thread.id)
+      )
+    ),
+  }
+);
 
 const ThreadDisplay = connect(
   mapStateToThreadProps,
